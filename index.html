@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reproductor HLS en pantalla completa</title>
+</head>
+<body style="margin:0; padding:0; background-color:black;">
+  <video id="video" style="width:100vw; height:100vh;" controls autoplay></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('video');
+    const videoSrc = 'https://1a-1791.com/video/fww1/9c/s8/2/3/q/f/z/3qfzy.gaa.tar?r_type=application/vnd.apple.mpegurl&r_range=1535527424-1535572962';
+
+    function requestFullscreen(element) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) { /* Safari */
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) { /* IE11 */
+        element.msRequestFullscreen();
+      }
+    }
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play();
+        requestFullscreen(video);
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+      video.addEventListener('loadedmetadata', () => {
+        video.play();
+        requestFullscreen(video);
+      });
+    } else {
+      alert('Tu navegador no soporta HLS');
+    }
+  </script>
+</body>
+</html>
